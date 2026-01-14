@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ report_title }} - {{ mission_name }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'SimHei', Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #1976D2;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #1976D2;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section h2 {
+            color: #1976D2;
+            font-size: 20px;
+            border-left: 4px solid #1976D2;
+            padding-left: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .section h3 {
+            color: #333;
+            font-size: 16px;
+            margin: 15px 0 10px 0;
+        }
+        
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .info-table th, .info-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        .info-table th {
+            background-color: #f5f5f5;
+            width: 150px;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+        
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        
+        .data-table th {
+            background-color: #1976D2;
+            color: white;
+        }
+        
+        .data-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .level-low { background-color: #C8E6C9 !important; }
+        .level-medium { background-color: #FFF9C4 !important; }
+        .level-high { background-color: #FFE0B2 !important; }
+        .level-extreme { background-color: #FFCDD2 !important; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1976D2;
+        }
+        
+        .stat-card .label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .risk-matrix {
+            display: inline-block;
+            margin: 20px auto;
+        }
+        
+        .risk-matrix table {
+            border-collapse: collapse;
+        }
+        
+        .risk-matrix td {
+            width: 60px;
+            height: 40px;
+            border: 1px solid #999;
+            text-align: center;
+            font-size: 12px;
+        }
+        
+        .recommendations {
+            background-color: #E3F2FD;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .recommendations ul {
+            margin-left: 20px;
+        }
+        
+        .recommendations li {
+            margin-bottom: 8px;
+        }
+        
+        .method-desc {
+            background-color: #f9f9f9;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 12px;
+        }
+        
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 报告头部 -->
+        <div class="header">
+            <h1>{{ report_title }}</h1>
+            <div class="subtitle">任务名称：{{ mission_name }} | 评估日期：{{ eval_time }}</div>
+        </div>
+        
+        <!-- 任务信息 -->
+        <div class="section">
+            <h2>一、任务信息</h2>
+            <table class="info-table">
+                <tr>
+                    <th>任务名称</th>
+                    <td>{{ mission_name }}</td>
+                </tr>
+                <tr>
+                    <th>任务日期</th>
+                    <td>{{ mission_date }}</td>
+                </tr>
+                <tr>
+                    <th>任务描述</th>
+                    <td>{{ mission_desc }}</td>
+                </tr>
+                <tr>
+                    <th>评估时间</th>
+                    <td>{{ eval_time }}</td>
+                </tr>
+                <tr>
+                    <th>评估方法</th>
+                    <td>{{ model_set | join(', ') }}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- 方法说明 -->
+        <div class="section">
+            <h2>二、评估方法说明</h2>
+            
+            <div class="method-desc">
+                <strong>1. 风险矩阵法 (Risk Matrix)</strong><br>
+                通过评估风险事件的可能性(L=1-5)和严重度(S=1-5)，计算风险值R=L×S。<br>
+                等级划分：Low(1-4)、Medium(5-9)、High(10-16)、Extreme(17-25)
+            </div>
+            
+            <div class="method-desc">
+                <strong>2. FMEA分析 (Failure Mode and Effects Analysis)</strong><br>
+                评估失效模式的严重度(S)、发生度(O)、检测度(D)，计算风险优先数RPN=S×O×D。<br>
+                等级划分：Low(1-100)、Medium(101-300)、High(301-600)、Extreme(601-1000)
+            </div>
+            
+            <div class="method-desc">
+                <strong>3. 蒙特卡洛模拟 (Monte Carlo Simulation)</strong><br>
+                对评分参数引入不确定性(±1波动)，通过2000次随机抽样得到风险分布，输出均值、标准差、P50、P90等统计量。
+            </div>
+            
+            <div class="method-desc">
+                <strong>4. 敏感性分析 (Sensitivity Analysis)</strong><br>
+                采用OAT(One-at-a-Time)方法，逐一调整各参数±1，观察对全局风险指标的影响，识别关键敏感因素。
+            </div>
+        </div>
+        
+        <!-- 风险矩阵结果 -->
+        {% if risk_matrix %}
+        <div class="section">
+            <h2>三、风险矩阵分析结果</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="value">{{ risk_matrix.total_events }}</div>
+                    <div class="label">风险事件总数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">{{ risk_matrix.total_risk }}</div>
+                    <div class="label">总风险分数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">{{ risk_matrix.avg_risk }}</div>
+                    <div class="label">平均风险</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" style="color: #F44336;">{{ risk_matrix.level_counts.get('Extreme', 0) + risk_matrix.level_counts.get('High', 0) }}</div>
+                    <div class="label">高/极高风险</div>
+                </div>
+            </div>
+            
+            <h3>风险等级分布</h3>
+            <table class="data-table" style="max-width: 500px;">
+                <tr>
+                    <th>等级</th>
+                    <th>数量</th>
+                    <th>占比</th>
+                </tr>
+                {% for level in ['Low', 'Medium', 'High', 'Extreme'] %}
+                <tr class="level-{{ level|lower }}">
+                    <td>{{ level }}</td>
+                    <td>{{ risk_matrix.level_counts.get(level, 0) }}</td>
+                    <td>{{ ((risk_matrix.level_counts.get(level, 0) / risk_matrix.total_events * 100) if risk_matrix.total_events > 0 else 0) | round(1) }}%</td>
+                </tr>
+                {% endfor %}
+            </table>
+            
+            <h3>Top-10 高风险事件</h3>
+            <table class="data-table">
+                <tr>
+                    <th>排名</th>
+                    <th>事件名称</th>
+                    <th>可能性(L)</th>
+                    <th>严重度(S)</th>
+                    <th>风险值(R)</th>
+                    <th>等级</th>
+                </tr>
+                {% for event in risk_matrix.top_n %}
+                <tr class="level-{{ event.level|lower }}">
+                    <td>{{ loop.index }}</td>
+                    <td style="text-align: left;">{{ event.name }}</td>
+                    <td>{{ event.likelihood }}</td>
+                    <td>{{ event.severity }}</td>
+                    <td><strong>{{ event.risk_score }}</strong></td>
+                    <td>{{ event.level }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% endif %}
+        
+        <!-- FMEA结果 -->
+        {% if fmea %}
+        <div class="section">
+            <h2>四、FMEA分析结果</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="value">{{ fmea.total_items }}</div>
+                    <div class="label">FMEA条目数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">{{ fmea.total_rpn }}</div>
+                    <div class="label">总RPN</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">{{ fmea.avg_rpn }}</div>
+                    <div class="label">平均RPN</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" style="color: #F44336;">{{ fmea.level_counts.get('Extreme', 0) + fmea.level_counts.get('High', 0) }}</div>
+                    <div class="label">高/极高RPN</div>
+                </div>
+            </div>
+            
+            <h3>Top-10 高RPN条目</h3>
+            <table class="data-table">
+                <tr>
+                    <th>排名</th>
+                    <th>系统</th>
+                    <th>失效模式</th>
+                    <th>S</th>
+                    <th>O</th>
+                    <th>D</th>
+                    <th>RPN</th>
+                    <th>等级</th>
+                </tr>
+                {% for item in fmea.top_n %}
+                <tr class="level-{{ item.level|lower }}">
+                    <td>{{ loop.index }}</td>
+                    <td>{{ item.system }}</td>
+                    <td style="text-align: left;">{{ item.failure_mode }}</td>
+                    <td>{{ item.S }}</td>
+                    <td>{{ item.O }}</td>
+                    <td>{{ item.D }}</td>
+                    <td><strong>{{ item.RPN }}</strong></td>
+                    <td>{{ item.level }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% endif %}
+        
+        <!-- 敏感性分析 -->
+        {% if sensitivity_rm or sensitivity_fmea %}
+        <div class="section">
+            <h2>五、敏感性分析结果</h2>
+            
+            {% if sensitivity_rm %}
+            <h3>风险矩阵敏感性（全局指标：{{ sensitivity_rm.global_indicator }} = {{ sensitivity_rm.base_value }}）</h3>
+            <table class="data-table">
+                <tr>
+                    <th>排名</th>
+                    <th>敏感因素</th>
+                    <th>-1变化后</th>
+                    <th>+1变化后</th>
+                    <th>影响分数</th>
+                </tr>
+                {% for factor in sensitivity_rm.top_n %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ factor.factor_name }}</td>
+                    <td>{{ factor.minus_value }}</td>
+                    <td>{{ factor.plus_value }}</td>
+                    <td><strong>{{ factor.impact_score }}</strong></td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+            
+            {% if sensitivity_fmea %}
+            <h3>FMEA敏感性（全局指标：{{ sensitivity_fmea.global_indicator }} = {{ sensitivity_fmea.base_value }}）</h3>
+            <table class="data-table">
+                <tr>
+                    <th>排名</th>
+                    <th>敏感因素</th>
+                    <th>-1变化后</th>
+                    <th>+1变化后</th>
+                    <th>影响分数</th>
+                </tr>
+                {% for factor in sensitivity_fmea.top_n %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ factor.factor_name }}</td>
+                    <td>{{ factor.minus_value }}</td>
+                    <td>{{ factor.plus_value }}</td>
+                    <td><strong>{{ factor.impact_score }}</strong></td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <!-- 蒙特卡洛结果 -->
+        {% if monte_carlo_rm or monte_carlo_fmea %}
+        <div class="section">
+            <h2>六、蒙特卡洛不确定性分析</h2>
+            
+            {% if monte_carlo_rm %}
+            <h3>风险矩阵蒙特卡洛（采样次数：{{ monte_carlo_rm.n_samples }}）</h3>
+            <table class="data-table" style="max-width: 800px;">
+                <tr>
+                    <th>指标</th>
+                    <th>名义值</th>
+                    <th>均值</th>
+                    <th>标准差</th>
+                    <th>P50</th>
+                    <th>P90</th>
+                    <th>P(High)</th>
+                </tr>
+                <tr>
+                    <td>{{ monte_carlo_rm.global_stats.indicator_name }}</td>
+                    <td>{{ monte_carlo_rm.global_stats.nominal_value }}</td>
+                    <td>{{ monte_carlo_rm.global_stats.mean }}</td>
+                    <td>{{ monte_carlo_rm.global_stats.std }}</td>
+                    <td>{{ monte_carlo_rm.global_stats.p50 }}</td>
+                    <td>{{ monte_carlo_rm.global_stats.p90 }}</td>
+                    <td>{{ (monte_carlo_rm.global_stats.prob_high * 100) | round(2) }}%</td>
+                </tr>
+            </table>
+            {% endif %}
+            
+            {% if monte_carlo_fmea %}
+            <h3>FMEA蒙特卡洛（采样次数：{{ monte_carlo_fmea.n_samples }}）</h3>
+            <table class="data-table" style="max-width: 800px;">
+                <tr>
+                    <th>指标</th>
+                    <th>名义值</th>
+                    <th>均值</th>
+                    <th>标准差</th>
+                    <th>P50</th>
+                    <th>P90</th>
+                    <th>P(High)</th>
+                </tr>
+                <tr>
+                    <td>{{ monte_carlo_fmea.global_stats.indicator_name }}</td>
+                    <td>{{ monte_carlo_fmea.global_stats.nominal_value }}</td>
+                    <td>{{ monte_carlo_fmea.global_stats.mean }}</td>
+                    <td>{{ monte_carlo_fmea.global_stats.std }}</td>
+                    <td>{{ monte_carlo_fmea.global_stats.p50 }}</td>
+                    <td>{{ monte_carlo_fmea.global_stats.p90 }}</td>
+                    <td>{{ (monte_carlo_fmea.global_stats.prob_high * 100) | round(2) }}%</td>
+                </tr>
+            </table>
+            {% endif %}
+            
+            {% if monte_carlo_ahp %}
+            <h3>AHP综合得分蒙特卡洛</h3>
+            <table class="data-table" style="max-width: 800px;">
+                <tr>
+                    <th>指标</th>
+                    <th>名义得分</th>
+                    <th>均值</th>
+                    <th>标准差</th>
+                    <th>P50</th>
+                    <th>P95</th>
+                    <th>P(High)</th>
+                    <th>P(Extreme)</th>
+                </tr>
+                <tr>
+                    <td>AHP综合得分</td>
+                    <td>{{ monte_carlo_ahp.nominal_score }}</td>
+                    <td>{{ monte_carlo_ahp.mean }}</td>
+                    <td>{{ monte_carlo_ahp.std }}</td>
+                    <td>{{ monte_carlo_ahp.p50 }}</td>
+                    <td>{{ monte_carlo_ahp.p95 }}</td>
+                    <td>{{ (monte_carlo_ahp.prob_high * 100) | round(2) }}%</td>
+                    <td>{{ (monte_carlo_ahp.prob_extreme * 100) | round(2) }}%</td>
+                </tr>
+            </table>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <!-- FTA结果 -->
+        {% if fta_result %}
+        <div class="section">
+            <h2>七、故障树分析（FTA）结果</h2>
+            
+            {% if fta_result.top_event %}
+            <h3>顶事件分析</h3>
+            <table class="info-table">
+                <tr>
+                    <th>顶事件名称</th>
+                    <td>{{ fta_result.top_event.name }}</td>
+                </tr>
+                <tr>
+                    <th>计算概率</th>
+                    <td>{{ "%.6e" | format(fta_result.top_event.probability) }}</td>
+                </tr>
+                <tr>
+                    <th>似然度等级</th>
+                    <td>L = {{ fta_result.top_event.likelihood }}</td>
+                </tr>
+                <tr>
+                    <th>风险等级</th>
+                    <td>{{ fta_result.top_event.risk_level }}</td>
+                </tr>
+            </table>
+            {% endif %}
+            
+            {% if fta_result.basic_events %}
+            <h3>基本事件列表</h3>
+            <table class="data-table">
+                <tr>
+                    <th>事件名称</th>
+                    <th>概率</th>
+                </tr>
+                {% for event in fta_result.basic_events %}
+                <tr>
+                    <td>{{ event.name }}</td>
+                    <td>{{ "%.6e" | format(event.probability) }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+            
+            {% if fta_result.sensitivity and fta_result.sensitivity.factors %}
+            <h3>基本事件敏感度分析</h3>
+            <table class="data-table">
+                <tr>
+                    <th>排名</th>
+                    <th>事件名称</th>
+                    <th>-10%概率</th>
+                    <th>+10%概率</th>
+                    <th>影响度</th>
+                </tr>
+                {% for factor in fta_result.sensitivity.factors[:5] %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ factor.name }}</td>
+                    <td>{{ "%.6e" | format(factor.prob_minus) }}</td>
+                    <td>{{ "%.6e" | format(factor.prob_plus) }}</td>
+                    <td>{{ "%.4e" | format(factor.impact) }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <!-- AHP结果 -->
+        {% if ahp_result %}
+        <div class="section">
+            <h2>八、改进AHP风险评分</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="value">{{ ahp_result.final_score | round(4) }}</div>
+                    <div class="label">综合风险得分</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">{{ ahp_result.risk_level }}</div>
+                    <div class="label">风险等级</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">{{ ahp_result.indicator_count }}</div>
+                    <div class="label">评估指标数</div>
+                </div>
+            </div>
+            
+            {% if ahp_result.corrected_weights %}
+            <h3>正态密度校正权重</h3>
+            <table class="data-table">
+                <tr>
+                    <th>指标名称</th>
+                    <th>原始权重</th>
+                    <th>校正权重</th>
+                    <th>标准化值z</th>
+                </tr>
+                {% for item in ahp_result.corrected_weights %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.original_weight | round(4) }}</td>
+                    <td>{{ item.corrected_weight | round(4) }}</td>
+                    <td>{{ item.z_score | round(4) }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <!-- 改进建议 -->
+        <div class="section">
+            <h2>七、风险改进建议</h2>
+            <div class="recommendations">
+                {% if recommendations %}
+                <ul>
+                    {% for rec in recommendations %}
+                    <li>{{ rec }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>暂无建议</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- 页脚 -->
+        <div class="footer">
+            <p>工厂风险评估系统 | 报告生成时间：{{ generated_time }}</p>
+            <p>本报告由系统自动生成，仅供参考</p>
+        </div>
+    </div>
+</body>
+</html>
